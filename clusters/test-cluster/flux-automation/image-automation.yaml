@@ -44,7 +44,8 @@ spec:
         email: fluxcdbot@users.noreply.github.com
         name: fluxcdbot
       # messageTemplate: 'Tự động cập nhật Nginx image lên bản {{range .Updated.Images}}{{println .}}{{end}}'
-      messageTemplate: 'Tự động cập nhật Nginx image lên bản {{range .Changed.Images}}{{println .}}{{end}}'
+      # messageTemplate: 'Tự động cập nhật Nginx image lên bản {{range .Changed.Images}}{{println .}}{{end}}'
+      messageTemplate: 'Tự động cập nhật Nginx image: {{range .Changed.Changes}}{{print .OldValue}} -> {{println .NewValue}}{{end}}'
     push:
       branch: main
   update:
