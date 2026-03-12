@@ -1,6 +1,6 @@
 ---
 # 1. Trạm Radar: Đi soi kho Docker Hub tìm image Nginx
-apiVersion: image.toolkit.fluxcd.io/v2beta2
+apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageRepository
 metadata:
   name: nginx-repo
@@ -11,7 +11,7 @@ spec:
 
 ---
 # 2. Bộ Lọc: Chỉ lấy các phiên bản 1.x (không lấy tag dạng latest hay alpine)
-apiVersion: image.toolkit.fluxcd.io/v2beta2
+apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImagePolicy
 metadata:
   name: nginx-policy
@@ -25,7 +25,7 @@ spec:
 
 ---
 # 3. Đôi Tay: Tự động tạo Commit đẩy lên GitHub
-apiVersion: image.toolkit.fluxcd.io/v1beta1
+apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageUpdateAutomation
 metadata:
   name: flux-system-auto
