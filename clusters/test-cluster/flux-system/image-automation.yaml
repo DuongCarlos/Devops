@@ -1,0 +1,51 @@
+---
+# 1. Trạm Radar: Đi soi kho Docker Hub tìm image Nginx
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: nginx-repo
+  namespace: flux-system
+spec:
+  image: nginx
+  interval: 1m # Cứ 1 phút quét 1 lần
+
+---
+# 2. Bộ Lọc: Chỉ lấy các phiên bản 1.x (không lấy tag dạng latest hay alpine)
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: nginx-policy
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: nginx-repo
+  policy:
+    semver:
+      range: 1.x # Tự động tìm bản 1.x cao nhất (ví dụ 1.25, 1.27)
+
+---
+# 3. Đôi Tay: Tự động tạo Commit đẩy lên GitHub
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageUpdateAutomation
+metadata:
+  name: flux-system-auto
+  namespace: flux-system
+spec:
+  interval: 1m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system # Trỏ vào chính kho Git hiện tại
+  git:
+    checkout:
+      ref:
+        branch: main
+    commit:
+      author:
+        email: fluxcdbot@users.noreply.github.com
+        name: fluxcdbot
+      messageTemplate: 'Tự động cập nhật Nginx image lên bản {{range .Updated.Images}}{{println .}}{{end}}'
+    push:
+      branch: main
+  update:
+    path: ./clusters/test-cluster # Thư mục chứa file YAML cần sửa
+    strategy: Setters
